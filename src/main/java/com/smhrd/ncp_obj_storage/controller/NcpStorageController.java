@@ -1,41 +1,34 @@
 package com.smhrd.ncp_obj_storage.controller;
 
 import com.smhrd.ncp_obj_storage.service.NcpStorageService;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@RestController
-@RequestMapping("/api/v1/files")
+import java.util.List;
+
+@Controller
+@RequestMapping("/board")
 public class NcpStorageController {
 
-    private final NcpStorageService ncpStorageService;
+    @Autowired
+    private NcpStorageService service;
 
-    public NcpStorageController(NcpStorageService ncpStorageService) {
-        this.ncpStorageService = ncpStorageService;
+    @GetMapping("/")
+    public String getUpload(){
+        return "upload";
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        String fileUrl = ncpStorageService.uploadFile(file);
-        return ResponseEntity.ok(fileUrl);
+    @PostMapping(value = "/upload", consumes = "multipart/form-data")
+    public ResponseEntity<Object> uploadFilesSample(
+            @RequestParam(value = "files") List<MultipartFile> multipartFiles) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.uploadFiles(multipartFiles, "sample-folder"));
     }
 
-    @GetMapping("/download/{fileName}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
-        // 네이버 클라우드에서 파일 다운로드 URL을 가져오는 서비스 호출
-        byte[] data = ncpStorageService.downloadFile(fileName);
-        ByteArrayResource resource = new ByteArrayResource(data);
 
-        // 응답에 파일 데이터와 메타정보 설정
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .contentLength(data.length)
-                .body(resource);
-    }
 }
