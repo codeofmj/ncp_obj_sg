@@ -6,8 +6,8 @@
 </head>
 <body>
 <h1>File Upload</h1>
-<form method="post" th:action="@{/upload}" enctype="multipart/form-data">
-    <input type="file" name="files" multiple />
+<form method="post" action="upload" enctype="multipart/form-data">
+    <input type="file" name="file" multiple />
     <input type="submit" value="Submit" />
 </form>
 </body>
