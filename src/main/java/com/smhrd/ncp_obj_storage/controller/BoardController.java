@@ -30,8 +30,11 @@ public class BoardController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file){
-        String fileUrl = service.uploadFile(file);
-        return ResponseEntity.ok(fileUrl);
+        System.out.println("파일업로드 요청...");
+//        String fileUrl = service.uploadFile(file);
+//        return ResponseEntity.ok(fileUrl);
+
+        return null;
     }
 
     @GetMapping("/download/{fileName}")
